@@ -26,16 +26,16 @@ public class AGtsp {
 
     public void executar() {
         criarPopulacao();
-        gerarRoleta(); // Gera a roleta para a população inicial
+        gerarRoleta(); // roleta p a população inicial
 
-        // Mostra a evolução da população a cada geração [cite: 44]
+        //evolução da população a cada geração 
         for (int i = 0; i < this.numeroGeracoes; i++) {
             novaPopulacao(); // Aplica seleção, crossover e mutação
             System.out.println("Geração " + (i + 1) + ": Melhor distância = " + String.format("%.2f", (1.0 / fitness(populacao.get(obterMelhor())))));
         }
 
         int melhor = obterMelhor();
-        System.out.println("\nMelhor solução encontrada:"); // [cite: 47]
+        System.out.println("\nMelhor solução encontrada:"); 
         mostrarRota(populacao.get(melhor));
     }
 
@@ -55,7 +55,7 @@ public class AGtsp {
         }
     }
 
-    // Um cromossomo é uma permutação de cidades (uma rota) [cite: 17]
+    
     private ArrayList<Cidade> criarCromossomo() {
         ArrayList<Cidade> cromossomo = new ArrayList<>(this.cidades);
         Collections.shuffle(cromossomo);
@@ -74,15 +74,15 @@ public class AGtsp {
         return Math.sqrt(dx * dx + dy * dy);
     }
 
-    // Calcula o fitness como o inverso da distância total [cite: 20]
+    // Calcula o fitness como o inverso da distância total 
     private double fitness(ArrayList<Cidade> cromossomo) {
         double distanciaTotal = 0;
 
-        // Soma as distâncias entre cidades consecutivas na rota
+        
         for (int i = 0; i < cromossomo.size() - 1; i++) {
             distanciaTotal += calcularDistancia(cromossomo.get(i), cromossomo.get(i + 1));
         }
-        // Adiciona a distância da última cidade de volta para a primeira
+       
         distanciaTotal += calcularDistancia(cromossomo.get(cromossomo.size() - 1), cromossomo.get(0));
 
         return 1.0 / distanciaTotal;
@@ -97,9 +97,9 @@ public class AGtsp {
 
         for (int i = 0; i < this.populacao.size(); i++) {
             double fitnessRelativo = fitness(this.populacao.get(i)) / fitnessTotal;
-            int qtdeSlots = (int) (fitnessRelativo * 10000); // Escala para melhor precisão
+            int qtdeSlots = (int) (fitnessRelativo * 10000);
             for (int j = 0; j < qtdeSlots; j++) {
-                this.roletaVirtual.add(i); // Adiciona o índice do indivíduo na roleta
+                this.roletaVirtual.add(i); 
             }
         }
     }
@@ -112,7 +112,7 @@ public class AGtsp {
         return this.roletaVirtual.get(indiceSorteado);
     }
 
-    // Cruzamento PMX (Partially Mapped Crossover) [cite: 23]
+   
     public ArrayList<ArrayList<Cidade>> cruzamentoPMX(ArrayList<Cidade> pai1, ArrayList<Cidade> pai2) {
         int tamanho = pai1.size();
 
@@ -154,7 +154,7 @@ public class AGtsp {
         }
     }
 
-    // Mutação por troca de duas posições (swap) [cite: 38]
+    
     private void mutacao(ArrayList<Cidade> cromossomo) {
         if (rand.nextDouble() * 100 < this.probMutacao) {
             int pos1 = rand.nextInt(cromossomo.size());
@@ -182,10 +182,10 @@ public class AGtsp {
     private void novaPopulacao() {
         ArrayList<ArrayList<Cidade>> novaPopulacao = new ArrayList<>();
 
-        // 1. Elitismo: Adiciona o melhor indivíduo da população atual na nova
+       
         novaPopulacao.add(new ArrayList<>(this.populacao.get(obterMelhor())));
 
-        // 2. Crossover: Realiza a quantidade de cruzamentos definida
+      
         for (int i = 0; i < this.qtdeCruzamentos; i++) {
              if (novaPopulacao.size() >= this.tamPopulacao) break;
 
@@ -208,17 +208,17 @@ public class AGtsp {
             }
         }
 
-        // 3. Reprodução: Preenche o resto com os melhores da população anterior
+       
         while (novaPopulacao.size() < this.tamPopulacao) {
             int indice = roleta();
             novaPopulacao.add(new ArrayList<>(this.populacao.get(indice)));
         }
 
         this.populacao = novaPopulacao;
-        gerarRoleta(); // Atualiza a roleta para a nova população
+        gerarRoleta(); 
     }
 
-    // Exibe a rota final e a distância total [cite: 41, 43]
+   
     private void mostrarRota(ArrayList<Cidade> rota) {
         System.out.println("Rota:"); // [cite: 48]
         for (int i = 0; i < rota.size(); i++) {
@@ -231,7 +231,7 @@ public class AGtsp {
     }
 
     public static void main(String[] args) {
-        // (população, % mutação, nº de cruzamentos por geração, nº de gerações)
+     
         AGtsp ag = new AGtsp(100, 5, 40, 200);
         ag.carregarCidades("cidades.csv");
         ag.executar();
